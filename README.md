@@ -3,6 +3,8 @@ C9 Bot
 
 Discord bot to track how long it's been since your last C9.
 
+![](c9.png)
+
 Usage
 ======
 

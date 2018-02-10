@@ -42,7 +42,7 @@ func reportLastC9(s *discordgo.Session, m *discordgo.MessageCreate) {
 		sendErrorMessage(s, m.ChannelID)
 	default:
 		d := time.Since(mostRecent)
-		msg := fmt.Sprintf("It has been %s since the last C9.", DurationString(d))
+		msg := fmt.Sprintf("It has been %s without a C9.", DurationString(d))
 		s.ChannelMessageSend(m.ChannelID, msg)
 	}
 }
