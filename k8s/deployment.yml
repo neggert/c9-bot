@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: c9-bot-deployment
+spec:
+  selector:
+    matchLabels:
+      app: c9-bot
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: c9-bot
+    spec:
+      containers:
+        - name: c9-bot
+          image: gcr.io/c9-bot/c9-bot:0.1.0
+          env:
+            - name: DATABASE_ADDRESS
+              value: 127.0.0.1
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: username
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: password
+            - name: DISCORD_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: discord-secrets
+                  key: bot-token
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.11
+          command: ["/cloud_sql_proxy",
+                    "-instances=c9-bot:us-central1:c9-bot-cloudsql=tcp:3306",
+                    "-credential_file=/secrets/cloudsql/credentials.json"]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+        - name: cloudsql
+          emptyDir:

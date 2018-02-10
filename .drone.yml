@@ -1,0 +1,34 @@
+workspace:
+  base: /go
+  path: src/github.com/neggert/c9-bot
+
+pipeline:
+  test:
+    image: golang:1.9
+    environment: 
+      - DATABASE_ADDRESS=database
+      - DATABASE_USERNAME=c9
+      - DATABASE_PASSWORD=test
+    commands:
+      - sleep 15  # wait for DB to finish starting up
+      - go get
+      - go vet
+      - go test 
+
+  build:
+    image: golang:1.9
+    environment:
+      - CGO_ENABLED=0
+      - GOOS=linux
+      - GOARCH=amd64
+    commands:
+      - go build -a -installsuffix cgo -o main .
+
+services:
+  database:
+    image: mysql
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_USER=c9
+      - MYSQL_PASSWORD=test
+      - MYSQL_DATABASE=c9bot
