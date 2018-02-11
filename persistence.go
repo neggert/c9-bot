@@ -14,7 +14,7 @@ var DatabasePassword string
 var db *sql.DB
 var insertStmt *sql.Stmt
 var mostRecentStmt *sql.Stmt
-var longestStmnt *sql.Stmt
+var longestStmt *sql.Stmt
 
 var ErrNoOccurrence = errors.New("No occurences found")
 
@@ -47,7 +47,7 @@ func initDB() error {
 		return err
 	}
 
-	longestStmnt, err = db.Prepare(`
+	longestStmt, err = db.Prepare(`
 		SELECT MAX(TIMESTAMPDIFF(DAY, prevts, ts))
         FROM (
             SELECT 
@@ -100,7 +100,7 @@ func getLongestGap(channel string) (int, error) {
 		return 0, err
 	}
 
-	err = longestStmnt.QueryRow(cid).Scan(&longest)
+	err = longestStmt.QueryRow(cid).Scan(&longest)
 	switch {
 	case err == sql.ErrNoRows:
 		return 0, ErrNoOccurrence
