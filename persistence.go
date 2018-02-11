@@ -14,6 +14,7 @@ var DatabasePassword string
 var db *sql.DB
 var insertStmt *sql.Stmt
 var mostRecentStmt *sql.Stmt
+var longestStmnt *sql.Stmt
 
 var ErrNoOccurrence = errors.New("No occurences found")
 
@@ -46,6 +47,21 @@ func initDB() error {
 		return err
 	}
 
+	longestStmnt, err = db.Prepare(`
+		SELECT MAX(TIMESTAMPDIFF(DAY, prevts, ts))
+        FROM (
+            SELECT 
+                ts,
+                @prev AS prevts,
+                @prev := ts
+            FROM occurrences, (select @prev:=NULL) vars
+            WHERE channelid = ?
+            ORDER BY ts
+        ) lagged`)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -74,4 +90,25 @@ func getMostRecentOccurrence(channel string) (time.Time, error) {
 		return mostRecent, err
 	}
 	return mostRecent, nil
+}
+
+func getLongestGap(channel string) (int, error) {
+	var longest sql.NullInt64
+
+	cid, err := parseChannelId(channel)
+	if err != nil {
+		return 0, err
+	}
+
+	err = longestStmnt.QueryRow(cid).Scan(&longest)
+	switch {
+	case err == sql.ErrNoRows:
+		return 0, ErrNoOccurrence
+	case err != nil:
+		return 0, err
+	}
+	if longest.Valid {
+		return int(longest.Int64), nil
+	}
+	return 0, ErrNoOccurrence
 }

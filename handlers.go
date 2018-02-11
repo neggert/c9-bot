@@ -43,6 +43,21 @@ func reportLastC9(s *discordgo.Session, m *discordgo.MessageCreate) {
 	default:
 		d := time.Since(mostRecent)
 		msg := fmt.Sprintf("It has been %s without a C9.", DurationString(d))
+
+		longestGap, err := getLongestGap(m.ChannelID)
+		switch {
+		case err == ErrNoOccurrence:
+			msg += " A new record!"
+		case err != nil:
+			log.Printf("Error getting longest gap on channel %s. Error: %s", m.ChannelID, err)
+		default:
+			msg += fmt.Sprintf(" Current record is %d day", longestGap)
+			if longestGap != 1 {
+				msg += "s"
+			}
+			msg += "."
+		}
+
 		s.ChannelMessageSend(m.ChannelID, msg)
 	}
 }
