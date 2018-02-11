@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: c9-bot
-          image: gcr.io/c9-bot/c9-bot:0.1.1
+          image: gcr.io/c9-bot/c9-bot:0.1.2
           env:
             - name: DATABASE_ADDRESS
               value: 127.0.0.1
