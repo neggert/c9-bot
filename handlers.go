@@ -55,11 +55,8 @@ func DurationString(d time.Duration) string {
 		hours := int(d.Hours())
 		howMany = hours / 24
 		units = "day"
-	case d >= time.Hour:
-		howMany = int(d.Hours())
-		units = "hour"
 	default:
-		return "less than 1 hour"
+		return "less than a day"
 	}
 	if howMany > 1 {
 		units += "s"

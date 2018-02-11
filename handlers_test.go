@@ -18,8 +18,5 @@ func TestDurationString(t *testing.T) {
 	t.Run("2 days", testCase(48*time.Hour, "2 days"))
 	t.Run("1.5 days", testCase(36*time.Hour, "1 day"))
 	t.Run("1 day", testCase(24*time.Hour, "1 day"))
-	t.Run("2 hours", testCase(2*time.Hour, "2 hours"))
-	t.Run("1.5 hours", testCase(90*time.Minute, "1 hour"))
-	t.Run("1 hour", testCase(time.Hour, "1 hour"))
-	t.Run("> hour", testCase(59*time.Minute, "less than 1 hour"))
+	t.Run("> 1 day", testCase(2*time.Hour, "less than a day"))
 }
