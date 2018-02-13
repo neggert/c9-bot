@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/olebedev/when"
 	"log"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -22,6 +24,27 @@ func makeMessageHandler(messageRegexp string, f func(*discordgo.Session, *discor
 }
 
 func recordC9(s *discordgo.Session, m *discordgo.MessageCreate) {
+	msg := strings.Trim(m.Content[3:], " ")
+
+	if len(msg) > 0 {
+		r, err := when.EN.Parse(msg, time.Now())
+		if err != nil {
+			log.Println("Error parsing C9 time")
+			r = nil
+		}
+		if r != nil {
+			err := insertOccurence(m.ChannelID, r.Time)
+			if err != nil {
+				log.Printf("Could not insert C9 at %s on channel %s. Error: %s\n", r.Time, m.ChannelID, err)
+				sendErrorMessage(s, m.ChannelID)
+			}
+
+			returnMsg := fmt.Sprintf("Logged a C9 %s ago", DurationString(time.Since(r.Time)))
+			s.ChannelMessageSend(m.ChannelID, returnMsg)
+			return
+		}
+	}
+
 	currentTime := time.Now()
 	err := insertOccurence(m.ChannelID, currentTime)
 	if err != nil {

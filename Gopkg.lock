@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/AlekSi/pointer"
+  packages = ["."]
+  revision = "08a25bac605b3fcb6cc27f3917b2c2c87451963d"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/bwmarrin/discordgo"
   packages = ["."]
   revision = "4a33b9bc7c56cfdb9bb244e33e83cb3941fe2bdc"
@@ -21,6 +27,24 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/olebedev/when"
+  packages = [
+    ".",
+    "rules",
+    "rules/common",
+    "rules/en",
+    "rules/ru"
+  ]
+  revision = "53693fbb59a88d8eb5a214820c5ec1ea76d2460c"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/crypto"
   packages = [
     "nacl/secretbox",
@@ -32,6 +56,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "27654963ce161050ccdfd23e0423da40ec5b7003de6fbb388b2c5d1fd2454f64"
+  inputs-digest = "88996315efbfdb71170f392c3235e708ed9f78356bb7791ecbc3982c1f3e3dfa"
   solver-name = "gps-cdcl"
   solver-version = 1
