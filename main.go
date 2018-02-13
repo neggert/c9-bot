@@ -36,8 +36,8 @@ func main() {
 	}
 	defer dg.Close()
 
-	dg.AddHandler(makeMessageHandler("!c9", recordC9))
-	dg.AddHandler(makeMessageHandler("!howlong", reportLastC9))
+	dg.AddHandler(makeMessageHandler("^!c9", recordC9))
+	dg.AddHandler(makeMessageHandler("^!howlong", reportLastC9))
 
 	err = dg.Open()
 	if err != nil {
