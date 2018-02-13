@@ -6,12 +6,13 @@ pipeline:
   test:
     image: golang:1.9
     environment: 
-      - DATABASE_ADDRESS=database
+      - DATABASE_ADDRESS=database:3306
       - DATABASE_USERNAME=c9
       - DATABASE_PASSWORD=test
     commands:
       - sleep 15  # wait for DB to finish starting up
-      - go get
+      - go get -u github.com/golang/dep/...
+      - dep ensure
       - go vet
       - go test 
 
