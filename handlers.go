@@ -46,7 +46,7 @@ func reportLastC9(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		longestGap, err := getLongestGap(m.ChannelID)
 		switch {
-		case err == ErrNoOccurrence:
+		case err == ErrNoOccurrence || longestGap < int(d.Hours())/24:
 			msg += " A new record!"
 		case err != nil:
 			log.Printf("Error getting longest gap on channel %s. Error: %s", m.ChannelID, err)
