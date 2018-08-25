@@ -17,7 +17,7 @@ func createmySQLPersistenceLayer(address string, username string, password strin
 
 	p := mySQLPersistenceLayer{}
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/c9bot?parseTime=true", address, username, password)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/c9bot?parseTime=true", username, password, address)
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {

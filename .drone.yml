@@ -13,21 +13,20 @@ pipeline:
       - sleep 15  # wait for DB to finish starting up
       - go get -u github.com/golang/dep/...
       - dep ensure
-      - go vet
-      - go test 
+      - go test -v ./...
 
-  build:
-    image: golang:1.9
-    environment:
-      - CGO_ENABLED=0
-      - GOOS=linux
-      - GOARCH=amd64
-    commands:
-      - go build -a -installsuffix cgo -o main .
+  # build:
+  #   image: golang:1.9
+  #   environment:
+  #     - CGO_ENABLED=0
+  #     - GOOS=linux
+  #     - GOARCH=amd64
+  #   commands:
+  #     - go build -a -installsuffix cgo -o main .
 
 services:
   database:
-    image: mysql
+    image: c9bot-mysql
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=true
       - MYSQL_USER=c9

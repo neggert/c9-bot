@@ -37,9 +37,10 @@ func setup(t *testing.T) {
 		t.Skip("Couldn't get environment variable DATABASE_PASSWORD, Skipping DB test.")
 	}
 
-	persistence, err := createmySQLPersistenceLayer(databaseAddress, databaseUsername, databasePassword)
+	var err error
+	persistence, err = createmySQLPersistenceLayer(databaseAddress, databaseUsername, databasePassword)
 	if err != nil {
-		t.Skip("Couldn't set up database. Skipping...")
+		t.Skip("Couldn't set up database. ", err)
 	}
 
 	_, err = persistence.db.Exec("INSERT INTO occurrences VALUES (1234, ?), (1234, ?), (1234, ?), (5678, ?)", t1, t2, t3, t4)
@@ -53,6 +54,10 @@ func teardown(t *testing.T) {
 	if err != nil {
 		t.Error("Could not drop test table", err)
 	}
+	_, err = persistence.db.Exec("CREATE TABLE occurrences(channelid BIGINT UNSIGNED, ts TIMESTAMP)")
+	if err != nil {
+		t.Error("Could not create test table", err)
+	}
 	persistence.Close()
 }
 
@@ -63,10 +68,12 @@ func TestInsertOccurrence(t *testing.T) {
 	channel := uint64(1234)
 	ts := time.Now().Round(0)
 
+	t.Log(persistence)
 	err := persistence.insertOccurence(fmt.Sprintf("%d", channel), ts)
 	if err != nil {
 		t.Error(err)
 	}
+	t.Log("Done inserting")
 
 	var retrievedTs time.Time
 	err = persistence.db.QueryRow("SELECT MAX(ts) FROM occurrences WHERE channelid = ?", channel).Scan(&retrievedTs)

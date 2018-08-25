@@ -11,10 +11,12 @@ import (
 
 func main() {
 
-	err := c9bot.RunC9Bot()
+	bot, err := c9bot.RunC9Bot()
+	defer bot.Close()
 	if err != nil {
 		log.Fatal("error creating bot", err)
 	}
+	log.Print("Successfully started C9 Bot")
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)

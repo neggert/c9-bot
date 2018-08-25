@@ -7,19 +7,17 @@ services:
     restart: always
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_USER=$DB_USER
-      - MYSQL_PASSWORD=$DB_PASSWORD
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=c9bot
-    volumes: 
-      - /mysql_data:/var/lib/mysql
   bot:
     build: c9bot
     image: c9bot
     restart: always
     environment:
       - DATABASE_ADDRESS=db:3306
-      - DATABASE_USERNAME=$DB_USER
-      - DATABASE_PASSWORD=$DB_PASSWORD
-      - DISCORD_BOT_TOKEN=$DISCORD_BOT_TOKEN
+      - DATABASE_USERNAME=${DB_USER}
+      - DATABASE_PASSWORD=${DB_PASSWORD}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
     depends_on:
       - db
