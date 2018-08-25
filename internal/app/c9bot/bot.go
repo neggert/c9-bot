@@ -10,7 +10,7 @@ func RunC9Bot() error {
 	token := MustEnv("DISCORD_BOT_TOKEN")
 	databaseAddress := MustEnv("DATABASE_ADDRESS")
 	databaseUsername := MustEnv("DATABASE_USERNAME")
-	databasePassword := MustEnv("DATABASE_Password")
+	databasePassword := MustEnv("DATABASE_PASSWORD")
 
 	persistence, err := createmySQLPersistenceLayer(databaseAddress, databaseUsername, databasePassword)
 	if err != nil {
