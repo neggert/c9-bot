@@ -2,60 +2,78 @@
 
 
 [[projects]]
+  digest = "1:ee907e9ead8d8b090f1e2c07967ff1ec7ed20687c2ffd270d1c6c1b71dff5496"
   name = "github.com/AlekSi/pointer"
   packages = ["."]
+  pruneopts = "UT"
   revision = "08a25bac605b3fcb6cc27f3917b2c2c87451963d"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:4fd5ce7844c22e194005b9e12fee8adc70fb5ba0bbba9e1964d2e3d1f301d789"
   name = "github.com/bwmarrin/discordgo"
   packages = ["."]
+  pruneopts = "UT"
   revision = "4a33b9bc7c56cfdb9bb244e33e83cb3941fe2bdc"
   version = "v0.18.0"
 
 [[projects]]
+  digest = "1:850c49ca338a10fec2cb9e78f793043ed23965489d09e30bcc19fe29719da313"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
+  pruneopts = "UT"
   revision = "a0583e0143b1624142adab07e0e97fe106d99561"
   version = "v1.3"
 
 [[projects]]
+  digest = "1:43dd08a10854b2056e615d1b1d22ac94559d822e1f8b6fcc92c1a1057e85188e"
   name = "github.com/gorilla/websocket"
   packages = ["."]
+  pruneopts = "UT"
   revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
   version = "v1.2.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:cb3e0863ed6c4ff67f4443e03a5b6b77e88927e57885335380d188553ceb577b"
   name = "github.com/olebedev/when"
   packages = [
     ".",
     "rules",
     "rules/common",
     "rules/en",
-    "rules/ru"
+    "rules/ru",
   ]
+  pruneopts = "UT"
   revision = "53693fbb59a88d8eb5a214820c5ec1ea76d2460c"
 
 [[projects]]
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = "UT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:8b550f9a9c314b3214e742b5163f5f5d97209b9b47d8312ff558e7c0b494893f"
   name = "golang.org/x/crypto"
   packages = [
     "nacl/secretbox",
     "poly1305",
-    "salsa20/salsa"
+    "salsa20/salsa",
   ]
+  pruneopts = "UT"
   revision = "5119cf507ed5294cc409c092980c7497ee5d6fd2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "88996315efbfdb71170f392c3235e708ed9f78356bb7791ecbc3982c1f3e3dfa"
+  input-imports = [
+    "github.com/bwmarrin/discordgo",
+    "github.com/go-sql-driver/mysql",
+    "github.com/olebedev/when",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

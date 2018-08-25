@@ -1,7 +1,8 @@
-package main
+package c9bot
 
 import (
 	"fmt"
+	"os"
 	"testing"
 	"time"
 )
@@ -13,6 +14,8 @@ var (
 	t4 time.Time
 )
 
+var persistence mySQLPersistenceLayer
+
 func init() {
 	t1 = time.Date(2017, 1, 1, 0, 0, 0, 0, time.UTC)
 	t2 = time.Date(2017, 1, 3, 0, 0, 0, 0, time.UTC)
@@ -21,30 +24,36 @@ func init() {
 }
 
 func setup(t *testing.T) {
-	err := createDBFromEnv()
-	if err != nil {
-		t.Error(err)
+	databaseAddress, ok := os.LookupEnv("DATABASE_ADDRESS")
+	if !ok {
+		t.Skip("Couldn't get environment variable DATABASE_ADDRESS, Skipping DB test.")
+	}
+	databaseUsername, ok := os.LookupEnv("DATABASE_USERNAME")
+	if !ok {
+		t.Skip("Couldn't get environment variable DATABASE_USERNAME, Skipping DB test.")
+	}
+	databasePassword, ok := os.LookupEnv("DATABASE_PASSWORD")
+	if !ok {
+		t.Skip("Couldn't get environment variable DATABASE_PASSWORD, Skipping DB test.")
 	}
 
-	_, err = db.Exec("CREATE TABLE occurrences(channelid BIGINT UNSIGNED, ts TIMESTAMP)")
+	persistence, err := createmySQLPersistenceLayer(databaseAddress, databaseUsername, databasePassword)
 	if err != nil {
-		t.Error("Could not create test table", err)
+		t.Skip("Couldn't set up database. Skipping...")
 	}
 
-	_, err = db.Exec("INSERT INTO occurrences VALUES (1234, ?), (1234, ?), (1234, ?), (5678, ?)", t1, t2, t3, t4)
+	_, err = persistence.db.Exec("INSERT INTO occurrences VALUES (1234, ?), (1234, ?), (1234, ?), (5678, ?)", t1, t2, t3, t4)
 	if err != nil {
 		t.Error("Could not populate test table", err)
 	}
-
-	initDB()
 }
 
 func teardown(t *testing.T) {
-	_, err := db.Exec("DROP TABLE occurrences")
+	_, err := persistence.db.Exec("DROP TABLE occurrences")
 	if err != nil {
 		t.Error("Could not drop test table", err)
 	}
-	db.Close()
+	persistence.Close()
 }
 
 func TestInsertOccurrence(t *testing.T) {
@@ -54,13 +63,13 @@ func TestInsertOccurrence(t *testing.T) {
 	channel := uint64(1234)
 	ts := time.Now().Round(0)
 
-	err := insertOccurence(fmt.Sprintf("%d", channel), ts)
+	err := persistence.insertOccurence(fmt.Sprintf("%d", channel), ts)
 	if err != nil {
 		t.Error(err)
 	}
 
 	var retrievedTs time.Time
-	err = db.QueryRow("SELECT MAX(ts) FROM occurrences WHERE channelid = ?", channel).Scan(&retrievedTs)
+	err = persistence.db.QueryRow("SELECT MAX(ts) FROM occurrences WHERE channelid = ?", channel).Scan(&retrievedTs)
 	if err != nil {
 		t.Error(err)
 	}
@@ -74,7 +83,7 @@ func TestGetMostRecentOccurrence(t *testing.T) {
 	setup(t)
 	defer teardown(t)
 
-	result, err := getMostRecentOccurrence("1234")
+	result, err := persistence.getMostRecentOccurrence("1234")
 	if err != nil {
 		t.Error(err)
 	}
@@ -82,7 +91,7 @@ func TestGetMostRecentOccurrence(t *testing.T) {
 		t.Errorf("Retrieved timestamp did not equal expected timestamp (expected %s, got %s)", t2, result)
 	}
 
-	result, err = getMostRecentOccurrence("5678")
+	result, err = persistence.getMostRecentOccurrence("5678")
 	if err != nil {
 		t.Error(err)
 	}
@@ -95,7 +104,7 @@ func TestGetLongestGap(t *testing.T) {
 	setup(t)
 	defer teardown(t)
 
-	result, err := getLongestGap("1234")
+	result, err := persistence.getLongestGap("1234")
 	if err != nil {
 		t.Error(err)
 	}
@@ -106,9 +115,9 @@ func TestGetLongestGap(t *testing.T) {
 		t.Errorf("Retrieved duration did not equal expected (expected %d, got %d)", expected, result)
 	}
 
-	result, err = getLongestGap("5678")
+	result, err = persistence.getLongestGap("5678")
 	switch {
-	case err == ErrNoOccurrence:
+	case err == errNoOccurrence:
 	case err != nil:
 		t.Error(err)
 	default:

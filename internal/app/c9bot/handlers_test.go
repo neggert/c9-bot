@@ -1,4 +1,4 @@
-package main
+package c9bot
 
 import (
 	"testing"
@@ -8,7 +8,7 @@ import (
 func TestDurationString(t *testing.T) {
 	testCase := func(d time.Duration, exp string) func(*testing.T) {
 		return func(t *testing.T) {
-			result := DurationString(d)
+			result := durationString(d)
 			if result != exp {
 				t.Errorf("DurationString was incorrect. Expected %s, got %s with input %s", exp, result, d)
 			}

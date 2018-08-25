@@ -1,4 +1,4 @@
 FROM alpine:3.7
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
-ADD main /
-CMD ["/main"]
+ADD c9-bot /
+CMD ["/c9-bot"]
