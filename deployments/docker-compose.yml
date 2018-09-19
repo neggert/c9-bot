@@ -2,24 +2,28 @@ version: '3'
 
 services:
   db:
-    build: db
+    build:
+      context: ./
+      dockerfile: deployments/db/Dockerfile
     image: c9bot-mysql
     restart: always
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_USER=$DB_USER
-      - MYSQL_PASSWORD=$DB_PASSWORD
+      - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=c9bot
     volumes: 
       - /mysql_data:/var/lib/mysql
   bot:
-    build: c9bot
+    build:
+      context: ./
+      dockerfile: deployments/c9bot/Dockerfile
     image: c9bot
     restart: always
     environment:
       - DATABASE_ADDRESS=db:3306
-      - DATABASE_USERNAME=$DB_USER
-      - DATABASE_PASSWORD=$DB_PASSWORD
-      - DISCORD_BOT_TOKEN=$DISCORD_BOT_TOKEN
+      - DATABASE_USERNAME=${DB_USER}
+      - DATABASE_PASSWORD=${DB_PASSWORD}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
     depends_on:
       - db
