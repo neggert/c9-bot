@@ -44,14 +44,14 @@ test: deps
 	$(GOTEST) $(PKGS) -v 
 
 dev:
-	eval $(bin/env-compose.sh $(DEV_DOCKER_MACHINE));\
+	eval $$(docker-machine env $(DEV_DOCKER_MACHINE));\
 	source $(DEV_SECRETS);\
-	docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(DEV_DOCKER_PROJECT) up -d 
+	docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(DEV_DOCKER_PROJECT) up --build -d 
 
-deploy: docker docker-db
-	eval $(bin/env-compose.sh $(PROD_DOCKER_MACHINE));\
+deploy:
+	eval $$(docker-machine env $(PROD_DOCKER_MACHINE));\
 	source $(PROD_SECRETS);\
-	docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROD_DOCKER_PROJECT) up -d 
+	docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROD_DOCKER_PROJECT) up --build -d 
 	
 
-.PHONY: clean test docker docker-db
+.PHONY: clean test

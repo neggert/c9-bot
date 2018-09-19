@@ -3,7 +3,7 @@ version: '3'
 services:
   db:
     build:
-      context: ./
+      context: ../
       dockerfile: deployments/db/Dockerfile
     image: c9bot-mysql
     restart: always
@@ -16,7 +16,7 @@ services:
       - /mysql_data:/var/lib/mysql
   bot:
     build:
-      context: ./
+      context: ../
       dockerfile: deployments/c9bot/Dockerfile
     image: c9bot
     restart: always
