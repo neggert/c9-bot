@@ -1,16 +1,13 @@
 GO=go
-DEP=dep
 GOBUILD=$(GO) build
 GOCLEAN=$(GO) clean
 GOTEST=$(GO) test
-GODEP=$(DEP) ensure
 
 BUILD_DIR=build
 BINARY_NAME=c9bot
 BINARY_MAC=$(BUILD_DIR)/darwin/$(BINARY_NAME)
 BINARY_LINUX=$(BUILD_DIR)/linux/$(BINARY_NAME)
 
-VENDOR_DIR=vendor
 MAIN=github.com/neggert/c9-bot/cmd/c9bot
 PKGS:=$(shell go list ./...)
 DOCKER_COMPOSE_FILE=deployments/docker-compose.yml
@@ -24,23 +21,19 @@ PROD_SECRETS=secrets/prod.env
 
 all: test build
 
-build: $(BINARY_MAC)
+build: $(BINARY_LINUX)
 
-$(BINARY_MAC): deps
+$(BINARY_MAC):
 	$(GOBUILD) -v -o $@ $(MAIN)
 
-$(BINARY_LINUX): deps
+$(BINARY_LINUX):
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -v -o $@ $(MAIN)
 
 clean:
 	$(GOCLEAN)
 	rm -rf $(BUILD_DIR)
-	rm -rf $(VENDOR_DIR)
 
-deps:
-	$(GODEP)
-
-test: deps
+test:
 	$(GOTEST) $(PKGS) -v 
 
 dev:
